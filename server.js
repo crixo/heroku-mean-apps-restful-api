@@ -128,6 +128,7 @@ app.delete("/contacts/:id", function(req, res) {
 });
 
 function sendToQueue(entity){
+  console.log("Sending to queue: " + queue);
 
       serviceBus.sendQueueMessage(queue, entity, function(error){
           if(!error){
