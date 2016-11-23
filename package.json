@@ -8,6 +8,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "azure": "^1.2.0-preview",
     "body-parser": "^1.13.3",
     "express": "^4.13.3",
     "mongodb": "^2.1.6"

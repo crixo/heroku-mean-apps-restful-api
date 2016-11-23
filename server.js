@@ -24,6 +24,21 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
   db = database;
   console.log("Database connection ready");
 
+ var connString = 'Endpoint=sb://cri-mean-contacts.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=4V7XMA9I6ZV6JOib/jvTBGgzQ4Gokftw65Lviosctho='; 
+var azure = require('azure');
+
+var serviceBus = azure.createServiceBusService(connString);
+var queue = "contacts";
+serviceBus.createQueueIfNotExists(queue, function (error) { 
+    if (!error) { 
+        // Topic was created or exists 
+        console.log('queue created or exists.'); 
+    } 
+    else { 
+        console.log(error); 
+    } 
+});  
+
   // Initialize the app.
   var server = app.listen(process.env.PORT || 8080, function () {
     var port = server.address().port;
@@ -66,7 +81,9 @@ app.post("/contacts", function(req, res) {
     if (err) {
       handleError(res, err.message, "Failed to create new contact.");
     } else {
-      res.status(201).json(doc.ops[0]);
+      var entity = doc.ops[0];
+      sendToQueue(entity);
+      res.status(201).json(entity);
     }
   });
 });
@@ -109,3 +126,15 @@ app.delete("/contacts/:id", function(req, res) {
     }
   });
 });
+
+function sendToQueue(entity){
+
+      serviceBusService.sendQueueMessage(queue, entity, function(error){
+          if(!error){
+              // message sent
+          }
+          else{
+            console.log("An error occurred sending to queue: " + error);
+          }
+      });  
+}
