@@ -129,7 +129,7 @@ app.delete("/contacts/:id", function(req, res) {
 
 function sendToQueue(entity){
 
-      serviceBusService.sendQueueMessage(queue, entity, function(error){
+      serviceBus.sendQueueMessage(queue, entity, function(error){
           if(!error){
               // message sent
           }
