@@ -14,7 +14,8 @@ app.use(bodyParser.json());
 var db;
 
 // Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
+var mongoConnString = process.env.MONGODB_URI || "mongodb://heroku_zv3jmdct:n5tm7a0l1eicandis6s6kuldlj@ds159237.mlab.com:59237/heroku_zv3jmdct";
+mongodb.MongoClient.connect(mongoConnString, function (err, database) {
   if (err) {
     console.log(err);
     process.exit(1);
@@ -40,6 +41,8 @@ serviceBus.createQueueIfNotExists(queue, function (error) {
     else { 
         console.log(error); 
     } 
+
+console.log(process.env.PORT); 
 
   // Initialize the app.
   var server = app.listen(process.env.PORT || 8080, function () {
@@ -131,8 +134,11 @@ app.delete("/contacts/:id", function(req, res) {
 
 function sendToQueue(entity){
   console.log("Sending to queue: " + queue);
+   console.log(entity);
+   var wrappedEntity = {body:entity}
+   var m = JSON.stringify(entity);
 
-      serviceBus.sendQueueMessage(queue, entity, function(error){
+      serviceBus.sendQueueMessage(queue, m, function(error){
           if(!error){
               // message sent
           }
