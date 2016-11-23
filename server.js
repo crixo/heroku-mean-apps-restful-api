@@ -136,7 +136,8 @@ function sendToQueue(entity){
   console.log("Sending to queue: " + queue);
    console.log(entity);
    var wrappedEntity = {body:entity}
-   var m = JSON.stringify(entity);
+   var m = JSON.stringify(wrappedEntity);
+   console.log(m);
 
       serviceBus.sendQueueMessage(queue, m, function(error){
           if(!error){
