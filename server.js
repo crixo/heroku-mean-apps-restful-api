@@ -82,7 +82,7 @@ app.post("/contacts", function(req, res) {
       handleError(res, err.message, "Failed to create new contact.");
     } else {
       var entity = doc.ops[0];
-      sendToQueue(entity);
+      sendToQueue(serviceBus, queue, entity);
       res.status(201).json(entity);
     }
   });
@@ -127,7 +127,7 @@ app.delete("/contacts/:id", function(req, res) {
   });
 });
 
-function sendToQueue(entity){
+function sendToQueue(serviceBus, queue, entity){
   console.log("Sending to queue: " + queue);
 
       serviceBus.sendQueueMessage(queue, entity, function(error){
