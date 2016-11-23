@@ -24,6 +24,9 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
   db = database;
   console.log("Database connection ready");
 
+
+});  
+
  var connString = 'Endpoint=sb://cri-mean-contacts.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=4V7XMA9I6ZV6JOib/jvTBGgzQ4Gokftw65Lviosctho='; 
 var azure = require('azure');
 
@@ -37,7 +40,6 @@ serviceBus.createQueueIfNotExists(queue, function (error) {
     else { 
         console.log(error); 
     } 
-});  
 
   // Initialize the app.
   var server = app.listen(process.env.PORT || 8080, function () {
@@ -82,7 +84,7 @@ app.post("/contacts", function(req, res) {
       handleError(res, err.message, "Failed to create new contact.");
     } else {
       var entity = doc.ops[0];
-      sendToQueue(serviceBus, queue, entity);
+      sendToQueue(entity);
       res.status(201).json(entity);
     }
   });
